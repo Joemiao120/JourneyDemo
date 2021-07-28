@@ -12,12 +12,17 @@ import kotlinx.coroutines.launch
 
 class CommentViewModel(private val repository: CommentRepository) : ViewModel() {
 
+    // Livedata for all comments
     private val _commentList = MutableLiveData<List<CommentData>>()
     val commentList: LiveData<List<CommentData>> = _commentList
 
+    // Livedata for filter comments
     private val _filterList = MutableLiveData<List<CommentData>>()
     val filterList: LiveData<List<CommentData>> = _filterList
 
+    /**
+     * Get all comments by post id
+     */
     fun getCommentList(id: Int) = viewModelScope.launch {
         val data = repository.getComments(id)
         if (!data.isNullOrEmpty()) {
@@ -25,6 +30,9 @@ class CommentViewModel(private val repository: CommentRepository) : ViewModel() 
         }
     }
 
+    /**
+     * Filter comments by filter text
+     */
     fun filterComments(filter: String?) {
         if (!filter.isNullOrEmpty()) {
             _filterList.value = _commentList.value?.filter {

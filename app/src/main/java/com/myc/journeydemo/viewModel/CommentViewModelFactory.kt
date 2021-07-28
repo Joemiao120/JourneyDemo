@@ -4,6 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.myc.journeydemo.repository.CommentRepository
 
+/**
+ * Factory for creating a [CommentViewModel] with a constructor that takes a
+ * [CommentRepository].
+ */
 class CommentViewModelFactory(
     private val repository: CommentRepository,
 ) : ViewModelProvider.NewInstanceFactory() {
