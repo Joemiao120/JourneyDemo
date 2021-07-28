@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">JourneyDemo</string>
+    <string name="post_list_title">Posts</string>
+    <string name="comment_list_title">Comments</string>
 </resources>

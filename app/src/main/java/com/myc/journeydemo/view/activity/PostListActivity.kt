@@ -2,24 +2,37 @@ package com.myc.journeydemo.view.activity
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.myc.journeydemo.R
 import com.myc.journeydemo.databinding.ActivityMainBinding
 import com.myc.journeydemo.view.adapter.PostAdapter
+import com.myc.journeydemo.viewModel.InjectorUtils
 import com.myc.journeydemo.viewModel.PostViewModel
 
-class PostListActivity : AppCompatActivity() {
+/**
+ * Post List page
+ */
+class PostListActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var postAdapter: PostAdapter
-    private val viewModel = PostViewModel()
+    private val postViewModel: PostViewModel by viewModels {
+        InjectorUtils.providePostsViewModelFactory()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        setSupportActionBar(binding.toolbar)
 
+        initRecyclerView()
+
+        initViewModel()
+    }
+
+    private fun initRecyclerView() {
         postAdapter = PostAdapter {
             enterCommentActivity(it)
         }
@@ -32,12 +45,24 @@ class PostListActivity : AppCompatActivity() {
                 )
             )
         }
+    }
 
-        viewModel.postList.observe(this) {
-            postAdapter.submitList(it.toMutableList())
+    private fun initViewModel() {
+        postViewModel.postList.observe(this) {
+            postAdapter.submitList(it)
         }
 
-        viewModel.getPostList()
+        postViewModel.filterList.observe(this) {
+            postAdapter.submitList(it)
+        }
+
+        postViewModel.getPostList()
+    }
+
+
+    override fun queryData(newText: String?) {
+        super.queryData(newText)
+        postViewModel.filterPosts(newText)
     }
 
     private fun enterCommentActivity(postId: Int) {
